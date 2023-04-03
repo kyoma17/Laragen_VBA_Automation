@@ -228,3 +228,4 @@ Sub sortBook(aWB, title)
     
     aWB.Sheets(1).range("A1:BZ800").Sort Key1:=range(rtIndexAdress), Order1:=xlAscending, header:=xlYes
 End Sub
+

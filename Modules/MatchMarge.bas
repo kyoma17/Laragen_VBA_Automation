@@ -30,8 +30,13 @@ Dim resultRange1, resultRange2, AnalysisRange1, AnalysisRange2, fileExSplitName 
 Dim reqNumber       As String
 
 
-    Dim resultfile, analysisFile As Variant
-    Dim resultBook, analysisBook, exBook As Workbook
+Dim resultfile, analysisFile As Variant
+Dim resultBook, analysisBook, exBook As Workbook
+
+'Result Book Variables
+Dim ResultSSRangeMergeCheck, ResultSSRangeTestName, ResultSSRangeHeader As range
+Dim ResultSSSampleRow, ResultSSHeaderRow, ResultSSTestRow As Integer
+
 'Main Script
 Public Sub MargeMatchResults()
     turnOff
@@ -120,6 +125,17 @@ Public Sub MargeMatchResults()
             Workbooks.OpenText FileName:=resultfile, Local:=True
             Set resultBook = ActiveWorkbook
             
+            
+            'Result SS Row Index range and where the Sample Table starts
+            ResultSSSampleRow = FindFirstHashRow(resultBook) + 2
+            ResultSSHeaderRow = ResultSSSampleRow - 2
+            ResultSSTestRow = ResultSSSampleRow - 3
+        
+           
+            Set ResultSSRangeMergeCheck = range("A" & ResultSSSampleRow - 4 & ":AZ" & ResultSSSampleRow - 4)
+            Set ResultSSRangeTestName = range("A" & ResultSSTestRow & ":AZ" & ResultSSTestRow)
+            Set ResultSSRangeHeader = range("A" & ResultSSHeaderRow & ":AZ" & ResultSSHeaderRow)
+            
             MARGEcheckTests resultBook
 
             'Set up the Target Row for copyPaste
@@ -146,8 +162,8 @@ Public Sub MargeMatchResults()
             TargetgmCAG2 = SearchColumnTarget("gmcag2", resultBook)
             
             ResultlastRow = resultBook.Sheets(1).Cells(Rows.count, 1).End(xlUp).Row
-            resultRange1 = Split(Cells(1, TargetIndex).Address, "$")(1) & 20
-            resultRange2 = Split(Cells(1, TargetIndex).Address, "$")(1) & 20 + ResultlastRow
+            resultRange1 = Split(Cells(1, TargetIndex).Address, "$")(1) & ResultSSSampleRow
+            resultRange2 = Split(Cells(1, TargetIndex).Address, "$")(1) & ResultSSSampleRow + ResultlastRow
             
             Dim exFile, cell As Variant
             
@@ -255,11 +271,11 @@ Function countCAGsamples(resultBook, resultTextLocation) As String
     cag = 9
     
     pcrCounter = 0
-    For Each pcrHeader In resultBook.Sheets(1).range("A18:Z18")
+    For Each pcrHeader In resultBook.Sheets(1).range(ResultSSRangeHeader.Address)
         If pcrHeader = "PCR1" Then
             pcrRange = Split(Cells(1, pcrHeader.column).Address, "$")(1)
             
-            For Each pcrSample In resultBook.Sheets(1).range(pcrRange & 20 & ":" & pcrRange & ResultlastRow)
+            For Each pcrSample In resultBook.Sheets(1).range(pcrRange & ResultSSSampleRow & ":" & pcrRange & ResultlastRow)
                 If Not pcrSample = "" Then pcrCounter = pcrCounter + 1
             Next
             
@@ -281,7 +297,7 @@ Function MARGEcheckTests(rwb) As Boolean
     Dim cell, test As Variant
     Dim notFound As String
     
-    For Each cell In rwb.Sheets(1).range("A17", "Z17").Cells
+    For Each cell In rwb.Sheets(1).range(ResultSSRangeTestName.Address).Cells
 
             For Each test In Union(MARGETests, MARGEExtraTests, margeGelTests)
                 If cell = "Index" Or _
@@ -318,7 +334,7 @@ Sub MatchExtra(resultBook, analysisBook)
     Dim cell, sample As Variant
     InsertColumnIndex = 1
     
-    For Each cell In resultBook.Sheets(1).range("A17", "Z17").Cells
+    For Each cell In resultBook.Sheets(1).range(ResultSSRangeTestName.Address).Cells
         
         For i = 1 To 50
             If MARGEExtraTests(i) = "" Then
@@ -326,16 +342,16 @@ Sub MatchExtra(resultBook, analysisBook)
                 Exit For
             ElseIf MARGEExtraTests(i) = cell Then
                 
-                If resultBook.Sheets(1).Cells(18, InsertColumnIndex + 3) = "GT" Then
+                If resultBook.Sheets(1).Cells(ResultSSHeaderRow, InsertColumnIndex + 3) = "GT" Then
                     replaceColumnIndex = SearchColumnTarget("#", resultBook) + 1
                     
                 End If
                 
                 replaceColumnIndex = InsertColumnIndex
                 
-                resultBook.Sheets(1).Cells(18, replaceColumnIndex + 3) = MARGEExtraStypes(i) & " GT"
+                resultBook.Sheets(1).Cells(ResultSSHeaderRow, replaceColumnIndex + 3) = MARGEExtraStypes(i) & " GT"
                 
-                SampleIndex = 20
+                SampleIndex = ResultSSSampleRow
                 'Loop through samples in ResultSS and match with AnalysisSS rows.
                 
                 For Each sample In resultBook.Worksheets(1).range(resultRange1, resultRange2)
@@ -431,7 +447,7 @@ Sub MatchData(resultBook, analysisBook)
     
     lastRow = SearchColumnTarget("#", resultBook)
     
-    Index = 20
+    Index = ResultSSSampleRow
     'Loop through samples in ResultSS and match with AnalysisSS rows.
     'For Each Sample In resultBook.Worksheets(1).Range("B18", "B114") 'Fix this to make dynamic
     
@@ -476,7 +492,7 @@ Public Function SearchColumnTarget(search, wb) As Integer
     Dim columnIndex As Integer
     Dim field       As Variant
     columnIndex = 1
-    For Each field In wb.Sheets(1).range("A18", "AZ18")        'The Template rows has to start at 18
+    For Each field In wb.Sheets(1).range(ResultSSRangeHeader.Address)        'The Template rows has to start at 18
         If Replace(LCase(field), " ", "") = search Then
             SearchColumnTarget = columnIndex
         End If
@@ -489,9 +505,9 @@ Public Sub setUpResultBook(wb, resultTextLocation)
     
     If Not resultTextLocation = 0 Then
         
-        wb.Worksheets(1).Cells(18, resultTextLocation) = "PCR1"
-        wb.Worksheets(1).Cells(18, resultTextLocation + 1) = "GM CAG 1"
-        wb.Worksheets(1).Cells(18, resultTextLocation + 2) = "GT"
+        wb.Worksheets(1).Cells(ResultSSHeaderRow, resultTextLocation) = "PCR1"
+        wb.Worksheets(1).Cells(ResultSSHeaderRow, resultTextLocation + 1) = "GM CAG 1"
+        wb.Worksheets(1).Cells(ResultSSHeaderRow, resultTextLocation + 2) = "GT"
         
         sampleCounterMARGE.Copy wb.Worksheets(1).Cells(3, resultTextLocation + 2)
         
@@ -514,7 +530,7 @@ Public Function SearchResultColumnTestMARGE(wb) As Integer
     found = False
     columnIndex = 0
     
-    For Each field In wb.Sheets(1).range("A17", "Z17")        'The Template rows has to start at 19 for MARGE
+    For Each field In wb.Sheets(1).range(ResultSSRangeTestName.Address)        'The Template rows has to start at 19 for MARGE
         If field = "" Then
             columnIndex = columnIndex + 1
         Else
@@ -589,4 +605,6 @@ Function checkStype(stype) As Boolean
         End If
     Next
 End Function
+
+
 

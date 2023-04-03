@@ -1,15 +1,4 @@
 Attribute VB_Name = "Z_TestEnviornment"
-Sub templateFunction()
-
-End Sub
-
-
-
-
-
-
-
-
 Public Sub test1()
     Dim Program, Version As String
     Program = "TaconicConversion"
@@ -144,4 +133,6 @@ Sub OpenCsvAsText(ByVal strFilepath As String)
             FieldInfo:=varColumnFormat
 
 End Sub
+
+
 

@@ -65,6 +65,9 @@ Function MargeVerifyTotalSamples() As String
     Dim Exsample, secondExsample, cell As Variant
     
     Dim complete    As Boolean
+    
+    Dim ResultSSStartRow As Integer
+    
     For Each resultfile In rsFSOFile
         complete = False
         If InStr(resultfile, ".xlsx") > 0 And InStr(resultfile, "~$") < 1 And InStr(resultfile, "desktop.ini") < 1 Then
@@ -75,7 +78,12 @@ Function MargeVerifyTotalSamples() As String
             
             samplenameColumn = SearchColumnTargetU("mouseid", resultBook, "Marge")
             lastRowResults = resultBook.Sheets(1).Cells(Rows.count, samplenameColumn).End(xlUp).Row
-            totalResultSample = lastRowResults - 19
+            
+            ResultSSStartRow = FindFirstHashRow(resultBook) + 1
+            
+            
+            totalResultSample = lastRowResults - ResultSSStartRow
+            
             For Each exFile In esFSOFile
                 'Set up Extraction Files
                 If complete Then
@@ -119,14 +127,18 @@ Function MargeVerifyTotalSamples() As String
 End Function
 
 Public Function SearchColumnTargetU(search, wb, org) As Integer
+    ' Dynamic Implemntation for Start Row
+    Dim sampleStartRow As Integer
+    sampleStartRow = FindFirstHashRow(wb)
+    
     Dim orgRange    As Variant
     
     If org = "Taconic" Then
         orgRange = wb.Sheets(1).range("A17", "K17")
     ElseIf org = "JAX" Then
-        orgRange = wb.Sheets(1).range("A19", "Z19") 'CHANGE When new Row
+        orgRange = wb.Sheets(1).range("A" & sampleStartRow, "Z" & sampleStartRow) 'CHANGE When new Row
     ElseIf org = "Marge" Then
-        orgRange = wb.Sheets(1).range("A18", "Z18")
+        orgRange = wb.Sheets(1).range("A" & sampleStartRow, "Z" & sampleStartRow)
     Else
         orgRange = wb.Sheets(1).range("A17", "K17")
     End If
@@ -141,9 +153,7 @@ Public Function SearchColumnTargetU(search, wb, org) As Integer
     Next
 End Function
 
-Sub test()
-    
-End Sub
+
 
 Function TACverifyTotalSamples() As String
     turnOff
@@ -290,7 +300,9 @@ Function JAXverifyTotalSamples() As String
     Dim samplenameColumn, lastRowResults, totalResultSample, totalExSample As Integer
     Dim Exsample, secondExsample, cell As Variant
     
-    Dim V
+    Dim ResultSSStartRow As Integer
+    
+    
     
     Dim complete    As Boolean
     For Each resultfile In rsFSOFile
@@ -300,7 +312,10 @@ Function JAXverifyTotalSamples() As String
             Set resultBook = ActiveWorkbook
             samplenameColumn = SearchColumnTargetU("mouseid", resultBook, "JAX")
             lastRowResults = resultBook.Sheets(1).Cells(Rows.count, samplenameColumn).End(xlUp).Row
-            totalResultSample = lastRowResults - 20 'Need to edit this if changed
+            
+            ResultSSStartRow = FindFirstHashRow(resultBook) + 1
+            
+            totalResultSample = lastRowResults - ResultSSStartRow 'Need to edit this if changed
             
             For Each exFile In esFSOFile
                 'Set up Extraction Files
@@ -346,4 +361,6 @@ Function JAXverifyTotalSamples() As String
     Application.EnableEvents = True
     JAXverifyTotalSamples = summaryMessage
 End Function
+
+
 

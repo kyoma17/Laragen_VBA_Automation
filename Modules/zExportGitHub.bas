@@ -1,6 +1,7 @@
 Attribute VB_Name = "zExportGitHub"
 Option Explicit
 
+'Exports each module as a .bas file for easy upload to github.
 Sub ExportModulesAsBAS()
     Dim VBComp As Object
     Dim ExportPath As String
@@ -28,7 +29,7 @@ Sub ExportModulesAsBAS()
     MsgBox "All modules have been exported as BAS files to " & ExportPath
 End Sub
 
-
+'Import the BAS files Do not use, broken.
 Sub ImportBASFilesAsModules()
     Dim ImportPath As String
     Dim FileName As String

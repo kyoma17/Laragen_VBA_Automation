@@ -1,7 +1,7 @@
 Attribute VB_Name = "PIReqTransfer"
 'Purpose To Transfer PI and Plate Information onto the Analysis SampleSheets
 'Written by Kenny Ma. Contact: kyoma17@gmail.com Cell number:(626)-246-2233
-'Version 1.0 July 21, 2021
+'Version 1.1 08/24/2023
 Option Explicit
 
 'Global Variables
@@ -93,50 +93,83 @@ Public Sub PiREQ()
                     
                     
                     For Each exFile In esFSOFile
-                        If found Then
-                            'Skip
-                        ElseIf explate = Replace(Split(exFile.name, "-")(1), ".xlsx", "") And InStr(exFile, ".xlsx") > 0 And InStr(exFile, "~$") < 1 Then
-                                
-                                Workbooks.OpenText FileName:=exFile, Local:=True
-                                Set exBook = ActiveWorkbook
-                                For Each Exsample In exBook.Worksheets(1).range("B16:M23")
-                                    If found Then
-                                        'Skip
-                                    ElseIf sample = Exsample Then
-                                       
-                                        For Each matcher In Union(exBook.Sheets(1).range("A11:R11"), exBook.Sheets(1).range("N1:N14"))
-                                            
-                                            If found Then
-                                                'Skip
-                                            ElseIf matcher = "" Then
-                                                'skip
-                                            ElseIf matcher.Font.color = Exsample.Font.color Then
-                                                found = True
-                                                For i = 1 To 6
-                                                
-                                                    If exBook.Worksheets(1).Cells(matcher.Row, matcher.column + i) = "" Then
-                                                        'skip
-                                                    ElseIf matcher.Font.color = exBook.Worksheets(1).Cells(matcher.Row, matcher.column + i).Font.color Then
-                                                        
-                                                        PI = exBook.Worksheets(1).Cells(matcher.Row, matcher.column + i)
-                                                        reqNumber = exBook.Worksheets(1).Cells(matcher.Row + 1, matcher.column + i)
 
-                                                    
-                                                    End If
-                                                Next i
-
-                                                analysisBook.Sheets(1).Cells(sample.Row, PIcolumn) = PI
-                                                analysisBook.Sheets(1).Cells(sample.Row, ReqColumn) = reqNumber
-                                                
-                                                
-                                            End If
-                                        Next
-                                    End If
-                                Next
-                                exBook.Close savechanges:=False
-    
-                        End If
+                        If InStr(exFile, ".xlsx") < 1 Or InStr(exFile, "~$") > 0 Then
                         
+                            'Skip
+                        Else
+                            If found Then
+                                'Skip
+                            ElseIf explate = Replace(Split(exFile.name, "-")(1), ".xlsx", "") Then
+                                    
+                                    Workbooks.OpenText FileName:=exFile, Local:=True
+                                    Set exBook = ActiveWorkbook
+                                    Dim plateHeader As String
+                                    Dim extractedValue As String
+                                    Dim fullSampleName As String
+                                    
+                                    
+                                    ' Extract value from cell A1
+                                    plateHeader = exBook.Sheets(1).range("A1").Value
+                                    
+                                    ' Extract the specific part you need (assuming it's the last part separated by space)
+                                    Dim parts() As String
+                                    parts = Split(plateHeader, " ")
+                                    
+                                    If UBound(parts) >= 0 Then
+                                        extractedValue = parts(UBound(parts))
+                                        extractedValue = extractedValue & "$" ' Add dollar sign
+                                    Else
+                                        extractedValue = "No value found"
+                                    End If
+
+                                    
+                                                                    
+                                    
+                                    'For Each Exsample In exBook.Worksheets(1).range("B16:M23")
+                                    For Each Exsample In exBook.Worksheets(1).range(" B3:M10")
+                                        fullSampleName = extractedValue & Exsample.Value
+                                        'Debug.Print (fullSampleName)
+                                    
+                                        If found Then
+                                            'Skip
+                                        ElseIf sample = fullSampleName Then
+                                           
+                                            For Each matcher In Union(exBook.Sheets(1).range("A11:R11"), exBook.Sheets(1).range("N1:N14"))
+                                                
+                                                If found Then
+                                                    'Skip
+                                                ElseIf matcher = "" Then
+                                                    'skip
+                                                ElseIf matcher.Font.color = Exsample.Font.color Then
+                                                    found = True
+                                                    For i = 1 To 6
+                                                    
+                                                        If exBook.Worksheets(1).Cells(matcher.Row, matcher.column + i) = "" Then
+                                                            'skip
+                                                        ElseIf matcher.Font.color = exBook.Worksheets(1).Cells(matcher.Row, matcher.column + i).Font.color Then
+                                                            
+                                                            PI = exBook.Worksheets(1).Cells(matcher.Row, matcher.column + i)
+                                                            reqNumber = exBook.Worksheets(1).Cells(matcher.Row + 1, matcher.column + i)
+                                                            'Debug.Print (PI)
+                                                            'Debug.Print (reqNumber)
+                                                            
+                                                        
+                                                        End If
+                                                    Next i
+    
+                                                    analysisBook.Sheets(1).Cells(sample.Row, PIcolumn) = PI
+                                                    analysisBook.Sheets(1).Cells(sample.Row, ReqColumn) = reqNumber
+                                                    
+                                                    
+                                                End If
+                                            Next
+                                        End If
+                                    Next
+                                    exBook.Close savechanges:=False
+        
+                            End If
+                        End If
                     Next
                 End If
             Next
@@ -159,6 +192,26 @@ Public Sub PiREQ()
     reset
     MsgBox ("PIREQ Complete")
 End Sub
+
+
+Sub ExtractNumber()
+    Dim cellValue As String
+    Dim parts() As String
+    
+    ' Get the value from cell A1
+    cellValue = range("A1").Value
+    
+    ' Split the value using space as the delimiter
+    parts = Split(cellValue, " ")
+    
+    ' Get the last part (which should be the number)
+    Dim extractedNumber As String
+    extractedNumber = parts(UBound(parts))
+    
+    ' Output the extracted number to another cell (e.g., B1)
+    range("B1").Value = extractedNumber
+End Sub
+
 
 'Adds PI and Req Header if does not exists
 Sub checkPIheader(aWB)

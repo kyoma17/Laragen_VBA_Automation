@@ -129,7 +129,7 @@ Public Sub PiREQ()
                                     'For Each Exsample In exBook.Worksheets(1).range("B16:M23")
                                     For Each Exsample In exBook.Worksheets(1).range(" B3:M10")
                                         fullSampleName = extractedValue & Exsample.Value
-                                        'Debug.Print (fullSampleName)
+                                        Debug.Print (fullSampleName)
                                     
                                         If found Then
                                             'Skip

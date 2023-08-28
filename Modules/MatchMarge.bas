@@ -153,7 +153,7 @@ Public Sub MargeMatchResults()
             
             'Set up the Target Row for copyPaste
             TargetName = SearchColumnTarget("mouseid", resultBook)
-            TargetIndex = SearchColumnTarget("#", resultBook)
+            TargetIndex = SearchColumnTargetFirst("#", resultBook)
             TargetGenotype = SearchColumnTarget("gt", resultBook)
             TargetPCR1 = SearchColumnTarget("pcr1", resultBook)
             TargetgmCAG = SearchColumnTarget("gmcag1", resultBook)
@@ -165,6 +165,10 @@ Public Sub MargeMatchResults()
             resultRange1 = Split(Cells(1, TargetIndex).Address, "$")(1) & ResultSSSampleRow
             resultRange2 = Split(Cells(1, TargetIndex).Address, "$")(1) & ResultSSSampleRow + ResultlastRow
             
+            Debug.Print (resultRange1)
+            Debug.Print (resultRange2)
+                    
+    
             Dim exFile, cell As Variant
             
             For Each exFile In esFSOFile
@@ -177,8 +181,10 @@ Public Sub MargeMatchResults()
                     
                     'Req Number Matching
                     For Each cell In Union(exBook.Sheets(1).range("A11", "M12"), exBook.Sheets(1).range("N1", "P13"))        ' Need to add the other stray ones on the right side as well
+                        
                         If cell = "" Then
-                            
+                            'Skip
+                
                         ElseIf InStr(cell, reqNumber) > 0 Then
                             For Each analysisFile In asFSOFile
                                 If InStr(analysisFile, ".xlsx") > 0 And InStr(analysisFile, "~$") < 1 Then
@@ -199,11 +205,18 @@ Public Sub MargeMatchResults()
                                     pcr2 = SearchColumnSource("pcr2", analysisBook)
                                     gmcag2 = SearchColumnSource("gm2", analysisBook)
                                     
+                                    
+                                    
+                                    
+                                    
                                     If Not SSname = 0 Then
-                                        
+                         
                                         AnalysisLastRow = analysisBook.Sheets(1).Cells(Rows.count, SSname).End(xlUp).Row - 1
                                         AnalysisRange1 = Split(Cells(1, SSname).Address, "$")(1) & 2
                                         AnalysisRange2 = Split(Cells(1, SSname).Address, "$")(1) & 2 + AnalysisLastRow
+                                        
+
+                                        
                                         
                                         'Runs Matching Function.
                                         MatchData resultBook, analysisBook
@@ -405,6 +418,7 @@ Public Function SampleNameSearchExtra(name, aWB, stype) As Integer
             'Skip
         ElseIf field = comboName And checkExtraStype(aWB.Sheets(1).Cells(Rowindex, sampType)) Then
             SampleNameSearchExtra = Rowindex
+            Debug.Print ("matched" & Rowindex)
             
             Exit For
         End If
@@ -450,8 +464,12 @@ Sub MatchData(resultBook, analysisBook)
     Index = ResultSSSampleRow
     'Loop through samples in ResultSS and match with AnalysisSS rows.
     'For Each Sample In resultBook.Worksheets(1).Range("B18", "B114") 'Fix this to make dynamic
+
+    
+    
     
     For Each sample In resultBook.Worksheets(1).range(resultRange1, resultRange2)
+        Debug.Print (sample)
         If sample = "" Then
             Exit For
         End If
@@ -460,6 +478,8 @@ Sub MatchData(resultBook, analysisBook)
         rowdata = SampleNameSearch(sample, resultBook, analysisBook)        'Grabs the Row from SS sheet.
         
         If TargetGenotype = 0 Then
+            'Skip
+            Debug.Print ("skip")
             
         ElseIf Not rowdata = 0 Then
             resultBook.Worksheets(1).Cells(Index, TargetGenotype) = _
@@ -487,7 +507,7 @@ Sub MatchData(resultBook, analysisBook)
     
 End Sub
 
-'This function will look for the names in the Target file and return the index of that column
+'This function will look for the names in the Target file and return the index of that column (LAST)
 Public Function SearchColumnTarget(search, wb) As Integer
     Dim columnIndex As Integer
     Dim field       As Variant
@@ -498,6 +518,28 @@ Public Function SearchColumnTarget(search, wb) As Integer
         End If
         columnIndex = columnIndex + 1
     Next
+End Function
+
+'This function will look for the names in the Target file and return the index of that column (FIRST)
+Public Function SearchColumnTargetFirst(search, wb) As Integer
+    Dim columnIndex As Integer
+    Dim field As Variant
+    
+    If search = "" Then
+        SearchColumnTargetFirst = "Search string is empty."
+        Exit Function
+    End If
+    
+    columnIndex = 1
+    
+    For Each field In wb.Sheets(1).range(ResultSSRangeHeader.Address)
+        If Replace(LCase(field), " ", "") = LCase(Replace(search, " ", "")) Then
+            SearchColumnTargetFirst = columnIndex
+            Exit Function
+        End If
+        columnIndex = columnIndex + 1
+    Next field
+    
 End Function
 
 'Changes the headers on the resultbooks, Also adds the counter formula

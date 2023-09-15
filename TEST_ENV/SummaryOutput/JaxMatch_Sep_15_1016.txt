@@ -1,0 +1,12 @@
+Run Summary:
+Duplicates in TGS_Typing_902158.xlsx. Skipped
+
+Jax Extra Sample:
+
+Counter Issues:
+
+CAG and GT count issue on TGS_Typing_901912.xlsx
+CAG and GT count issue on TGS_Typing_901933.xlsx
+CAG and GT count issue on TGS_Typing_902045.xlsx
+CAG and GT count issue on TGS_Typing_902087.xlsx
+CAG and GT count issue on TGS_Typing_902090.xlsx

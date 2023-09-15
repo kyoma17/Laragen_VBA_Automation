@@ -1,0 +1,26 @@
+Summary:
+Tg(HSA*LR)20bCath- repeat copy number from TGS_Typing_900775.xlsx not found in Test DB
+Htt<tm5Mem> from TGS_Typing_900782.xlsx not found in Test DB
+Htt<tm1.1Mfc> Laragen from TGS_Typing_900807.xlsx not found in Test DB
+Generic Human FXN - Laragen from TGS_Typing_900883.xlsx not found in Test DB
+Htt<tm1.1Mfc> Laragen from TGS_Typing_901093.xlsx not found in Test DB
+Generic Human FXN - Laragen from TGS_Typing_902516.xlsx not found in Test DB
+Htt<tm1.1Mfc> Laragen from TGS_Typing_902540.xlsx not found in Test DB
+Htt<tm5Mem> from TGS_Typing_902733.xlsx not found in Test DB
+
+Marge Extra Sample:
+Counter Issues:
+
+CAG and GT count issue on TGS_Typing_900775.xlsx
+CAG and GT count issue on TGS_Typing_900782.xlsx
+CAG and GT count issue on TGS_Typing_900807.xlsx
+CAG and GT count issue on TGS_Typing_900883.xlsx
+CAG and GT count issue on TGS_Typing_901093.xlsx
+CAG and GT count issue on TGS_Typing_901883.xlsx
+CAG and GT count issue on TGS_Typing_901888.xlsx
+CAG and GT count issue on TGS_Typing_901963.xlsx
+CAG and GT count issue on TGS_Typing_902071.xlsx
+CAG and GT count issue on TGS_Typing_902158.xlsx
+CAG and GT count issue on TGS_Typing_902516.xlsx
+CAG and GT count issue on TGS_Typing_902540.xlsx
+CAG and GT count issue on TGS_Typing_902733.xlsx

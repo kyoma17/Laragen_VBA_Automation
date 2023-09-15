@@ -1,0 +1,10 @@
+Run Summary:
+
+Jax Extra Sample:
+
+Counter Issues:
+
+CAG and GT count issue on TGS_Typing_901879 (1).xlsx
+CAG and GT count issue on TGS_Typing_901879.xlsx
+CAG and GT count issue on TGS_Typing_901908.xlsx
+CAG and GT count issue on TGS_Typing_902099.xlsx

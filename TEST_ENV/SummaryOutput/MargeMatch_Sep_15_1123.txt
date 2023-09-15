@@ -1,0 +1,12 @@
+Summary:
+Tg(HSA*LR)20bCath- repeat copy number from TGS_Typing_900775.xlsx not found in Test DB
+
+Marge Extra Sample:
+Counter Issues:
+
+CAG and GT count issue on TGS_Typing_900775.xlsx
+CAG and GT count issue on TGS_Typing_901883.xlsx
+CAG and GT count issue on TGS_Typing_901888.xlsx
+CAG and GT count issue on TGS_Typing_901963.xlsx
+CAG and GT count issue on TGS_Typing_902071.xlsx
+CAG and GT count issue on TGS_Typing_902158.xlsx

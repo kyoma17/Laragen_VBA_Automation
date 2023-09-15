@@ -1,0 +1,13 @@
+Run Summary:
+Htt<tm3Mem> from TGS_Typing_901912.xlsx not found in Test DB
+Htt<tm1.1Pfs>/80 from TGS_Typing_901933.xlsx not found in Test DB
+Htt<tm3Mem> from TGS_Typing_902045.xlsx not found in Test DB
+65Q from TGS_Typing_902087.xlsx not found in Test DB
+Htt<tm1.1Pfs>/80 from TGS_Typing_902090.xlsx not found in Test DB
+Duplicates in TGS_Typing_902158.xlsx. Skipped
+Htt<tm1.1Pfs>/80 from TGS_Typing_902207.xlsx not found in Test DB
+
+Jax Extra Sample:
+
+Counter Issues:
+

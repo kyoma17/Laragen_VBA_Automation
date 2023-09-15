@@ -1,0 +1,11 @@
+Run Summary:
+Generic Human FXN from TGS_Typing_899464.xlsx not found in Test DB
+Q175 <neo del> from TGS_Typing_901879 (1).xlsx not found in Test DB
+Formatting Issue with TGS_Typing_901879 (1).xlsxFormatting Issue with TGS_Typing_901908.xlsxFormatting Issue with TGS_Typing_902065.xlsxFormatting Issue with TGS_Typing_902099.xlsx
+Jax Extra Sample:
+
+Counter Issues:
+
+CAG and GT count issue on TGS_Typing_901879 (1).xlsx
+CAG and GT count issue on TGS_Typing_901908.xlsx
+CAG and GT count issue on TGS_Typing_902099.xlsx

@@ -1,0 +1,15 @@
+Run Summary:
+Formatting Issue with TGS_Typing_901879 (1).xlsx
+Formatting Issue with TGS_Typing_901879.xlsx
+Formatting Issue with TGS_Typing_901908.xlsx
+Formatting Issue with TGS_Typing_902065.xlsx
+Formatting Issue with TGS_Typing_902099.xlsx
+
+Jax Extra Sample:
+
+Counter Issues:
+
+CAG and GT count issue on TGS_Typing_901879 (1).xlsx
+CAG and GT count issue on TGS_Typing_901879.xlsx
+CAG and GT count issue on TGS_Typing_901908.xlsx
+CAG and GT count issue on TGS_Typing_902099.xlsx

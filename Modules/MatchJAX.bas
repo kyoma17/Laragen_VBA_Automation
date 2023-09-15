@@ -136,18 +136,23 @@ Public Sub JaxMatchResults()
             
             'Result SS Row Index range and where the Sample Table starts
             ResultSSSampleRow = FindFirstHashRow(resultBook) + 2
+            
+            'Debug.Print ("result sample row" & ResultSSSampleRow)
             ResultSSHeaderRow = ResultSSSampleRow - 2
             ResultSSTestRow = ResultSSSampleRow - 3
         
            
             Set ResultSSRangeMergeCheck = range("A" & ResultSSSampleRow - 4 & ":AZ" & ResultSSSampleRow - 4)
+            
+            Debug.Print ResultSSRangeMergeCheck.Address
+            
             Set ResultSSRangeTestName = range("A" & ResultSSTestRow & ":AZ" & ResultSSTestRow)
             Set ResultSSRangeHeader = range("A" & ResultSSHeaderRow & ":AZ" & ResultSSHeaderRow)
-            
+
             
             JAXcheckTests resultBook
             If JAXCheckFormatting(resultBook) Then
-                summaryMessage = summaryMessage & "Formatting Issue with " & resultfile.name
+                'summaryMessage = summaryMessage & "Formatting Issue with " & resultfile.name & vbCrLf
             End If
              
             
@@ -161,10 +166,23 @@ Public Sub JaxMatchResults()
             resultTextLocation = SearchResultColumnTestJax(resultBook)
             
             setUpResultBooks resultBook, resultTextLocation
-            reqNumber = Split(resultBook.Sheets(1).Cells(3, 1), " ")(2)
+            Debug.Print (resultBook.Sheets(1).Cells(3, 1))
+            
+            Dim cellValue As String
+            cellValue = resultBook.Sheets(1).Cells(3, 1).Value ' Replace with your cell reference
+    
+            reqNumber = ExtractReqNumber(cellValue)
+            
+            Debug.Print (reqNumber)
+                    
+            
             
             'Set up the Target Row for copyPaste
             TargetName = SearchColumnTarget("mouseid", resultBook)
+            
+            'Debug.Print (TargetName)
+            'Debug.Print (reqNumber)
+            
             
             TargetGenotype = SearchColumnTarget("gt", resultBook)
             TargetPCR1 = SearchColumnTarget("pcr1", resultBook)
@@ -321,6 +339,7 @@ Function JAXCheckFormatting(rwb) As Boolean
     JAXCheckFormatting = False
     Dim items As Variant
     For Each items In rwb.Sheets(1).range(ResultSSRangeMergeCheck.Address)
+        'Debug.Print (items)
         If items.MergeCells Then
             JAXCheckFormatting = True
         End If
@@ -336,18 +355,19 @@ Function JAXcheckTests(rwb) As Boolean
 
             For Each test In Union(jaxTests, jaxExtraTests, jaxGelTests)
                 If cell = "Index" Or _
-                cell = "Animal ID" Or _
-                cell = "PCR 1" Or _
-                cell = "GM CAG 1" Or _
-                cell = "SEQ CAG 1" Or _
-                cell = "Plate #" Or _
-                cell = "Serial #" Or _
-                cell = "Comment" Then
+                    cell = "Animal ID" Or _
+                    cell = "PCR 1" Or _
+                    cell = "GM CAG 1" Or _
+                    cell = "SEQ CAG 1" Or _
+                    cell = "Plate #" Or _
+                    cell = "Serial #" Or _
+                    cell = "Comment" Then
                     'skip
                 ElseIf cell = "" Or test = "" Then
                     'SkipMsgBox (cell & test)
                 ElseIf cell = test Then
                     JAXcheckTests = True
+
                 Else
                     notFound = cell
                 End If
@@ -435,9 +455,13 @@ Public Function SampleNameSearchExtra(name, aWB, stype) As Integer
     
     'Loops through analysis Sheet and searches for Sample Name
     For Each field In aWB.Sheets(1).range(AnalysisRange1, AnalysisRange2)
+
+        If comboName = field Then
+
+        End If
+
         
         If field = comboName And checkExtraStype(aWB.Sheets(1).Cells(Rowindex, sampType)) Then
-            
             SampleNameSearchExtra = Rowindex
             Exit For
         End If
@@ -602,11 +626,15 @@ Function SampleNameSearch(name, aWB) As Integer
     For Each field In aWB.Sheets(1).range(AnalysisRange1, AnalysisRange2)        ' Make This dynamic, not SS for now
         comboName = fileExSplitName & "$" & name
         
+
+        
+        
         If field = "" Then
             'Skip
         ElseIf field = comboName And checkJaxExtraStype(aWB.Sheets(1).Cells(columnIndex, sampType)) Then
-            
+
             SampleNameSearch = columnIndex
+            
             Exit For
         End If
         columnIndex = columnIndex + 1
@@ -647,29 +675,27 @@ Sub MatchData(resultBook, analysisBook)
             
             'Where the Magic Happens. Matches samples to AnalysisSS. Will Ignore Extra Test Stypes
             rowdata = SampleNameSearch(sample, analysisBook)        'Grabs the Row from SS sheet.
+            'Debug.Print ("Row" & rowdata)
+            'Debug.Print ("TG" & TargetGenotype)
+            'Debug.Print ("PCR" & PCR1)
+            
             
             'PCR1 Section
             If Not rowdata = 0 And Not TargetGenotype = 0 And Not PCR1 = 0 Then
-                resultBook.Worksheets(1).Cells(Index, TargetGenotype) = _
-                                                      analysisBook.Worksheets(1).Cells(rowdata, genotype)
-                resultBook.Worksheets(1).Cells(Index, TargetPCR1) = _
-                                                      analysisBook.Worksheets(1).Cells(rowdata, PCR1)
-                resultBook.Worksheets(1).Cells(Index, TargetgmCAG) = _
-                                                      analysisBook.Worksheets(1).Cells(rowdata, gmcag)
-                resultBook.Worksheets(1).Cells(Index, TargetseqCAG) = _
-                                                      analysisBook.Worksheets(1).Cells(rowdata, seqCAG)
+
+                resultBook.Worksheets(1).Cells(Index, TargetGenotype) = analysisBook.Worksheets(1).Cells(rowdata, genotype)
+                resultBook.Worksheets(1).Cells(Index, TargetPCR1) = analysisBook.Worksheets(1).Cells(rowdata, PCR1)
+                resultBook.Worksheets(1).Cells(Index, TargetgmCAG) = analysisBook.Worksheets(1).Cells(rowdata, gmcag)
+                resultBook.Worksheets(1).Cells(Index, TargetseqCAG) = analysisBook.Worksheets(1).Cells(rowdata, seqCAG)
                                                       
                 'PCR2 Section
                 If Not pcr2 = 0 And Not gmcag2 = 0 And Not seqcag2 = 0 Then
                     
-                    resultBook.Worksheets(1).Cells(Index, lastRow + 1) = _
-                                                          analysisBook.Worksheets(1).Cells(rowdata, pcr2)
+                    resultBook.Worksheets(1).Cells(Index, lastRow + 1) = analysisBook.Worksheets(1).Cells(rowdata, pcr2)
                     
-                    resultBook.Worksheets(1).Cells(Index, lastRow + 2) = _
-                                                          analysisBook.Worksheets(1).Cells(rowdata, gmcag2)
+                    resultBook.Worksheets(1).Cells(Index, lastRow + 2) = analysisBook.Worksheets(1).Cells(rowdata, gmcag2)
                     
-                    resultBook.Worksheets(1).Cells(Index, lastRow + 3) = _
-                                                          analysisBook.Worksheets(1).Cells(rowdata, seqcag2)
+                    resultBook.Worksheets(1).Cells(Index, lastRow + 3) = analysisBook.Worksheets(1).Cells(rowdata, seqcag2)
                     
                     'Transfer Mark
                     
@@ -726,6 +752,20 @@ Public Sub setUpResultBooks(wb, resultTextLocation)
         wb.Worksheets(1).Cells(ResultSSHeaderRow, resultTextLocation + 1) = "GM CAG 1"
         wb.Worksheets(1).Cells(ResultSSHeaderRow, resultTextLocation + 2) = "SEQ CAG 1"
         wb.Worksheets(1).Cells(ResultSSHeaderRow, resultTextLocation + 3) = "GT"
+        
+        Dim CounterFormulaBox As range
+        
+        Set CounterFormulaBox = wb.Worksheets(1).Cells(3, resultTextLocation + 3)
+        
+        If CounterFormulaBox.MergeCells Then
+            UnmergeMergedRangeBasedOnCell wb.Worksheets(1), Cells(3, resultTextLocation + 3)
+
+        End If
+        
+        
+        Debug.Print (CounterFormulaBox)
+        
+
         
         sampleCounterJax.Copy wb.Worksheets(1).Cells(3, resultTextLocation + 3)
         
@@ -826,4 +866,47 @@ Function FindFirstHashRow(wb) As Integer
 End Function
 
 
+
+Function ExtractReqNumber(inputText As String) As String
+    Dim regex As Object
+    Set regex = CreateObject("VBScript.RegExp")
+    
+    ' Define the regex pattern to match variations of "Req#:" or "Req #:"
+    regex.Pattern = "Req\s*#?\s*:\s*(\d+)"
+    
+    ' Check if the pattern matches the input text
+    If regex.test(inputText) Then
+        ' If there's a match, extract the captured group (the number)
+        Dim match As Object
+        Set match = regex.Execute(inputText)(0)
+        ExtractReqNumber = match.SubMatches(0)
+    Else
+        ' If no match is found, return an empty string or handle the error as needed
+        ExtractReqNumber = ""
+    End If
+End Function
+
+Sub UnmergeMergedRangeBasedOnCell(ByVal ws As Worksheet, ByVal targetCell As range)
+    Dim cell As range
+    Dim mergedRange As range
+    
+    ' Loop through all cells in the worksheet
+    For Each cell In ws.UsedRange
+        If cell.MergeCells Then
+            ' Check if the target cell is within the merged range of the current cell
+            If Not Intersect(targetCell, cell.MergeArea) Is Nothing Then
+                ' If it is, store the merged range in the mergedRange variable
+                Set mergedRange = cell.MergeArea
+                Exit For ' Exit the loop since we found the merged range
+            End If
+        End If
+    Next cell
+    
+    ' Check if a merged range was found
+    If Not mergedRange Is Nothing Then
+        mergedRange.UnMerge
+    Else
+        MsgBox "No merged range found for the target cell."
+    End If
+End Sub
 

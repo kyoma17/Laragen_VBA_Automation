@@ -74,7 +74,7 @@ Public Sub test1()
     
     Dim Index       As Integer
     Dim found       As Boolean
-    Dim Match       As Boolean
+    Dim match       As Boolean
     Dim Current     As String
     
     'Use For Each loop to loop through each file in the folder

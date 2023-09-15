@@ -32,9 +32,10 @@ End Sub
 
 Sub checkSSHeader()
     Dim ssHeaders() As Variant
-    ssHeaders = Array("Sample Name", "Stype")
+    ssHeaders = Array("Sample Name", "Stype", "PCR1", "GM", "Seq")
     headerChecker ssHeaders, analysisBook
 End Sub
+
 
 
 Sub GMTransfer()

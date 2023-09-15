@@ -133,6 +133,9 @@ Public Sub MargeMatchResults()
         
            
             Set ResultSSRangeMergeCheck = range("A" & ResultSSSampleRow - 4 & ":AZ" & ResultSSSampleRow - 4)
+            
+            Debug.Print (ResultSSRangeMergeCheck)
+            
             Set ResultSSRangeTestName = range("A" & ResultSSTestRow & ":AZ" & ResultSSTestRow)
             Set ResultSSRangeHeader = range("A" & ResultSSHeaderRow & ":AZ" & ResultSSHeaderRow)
             

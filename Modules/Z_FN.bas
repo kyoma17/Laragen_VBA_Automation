@@ -208,6 +208,9 @@ Sub CreateTextFileBasic(title, text, mainWB)
     ' (1) Open an instance of the FileSystemObject.
     Set fso = New Scripting.FileSystemObject
     
+    
+    FolderExists (mainWB.range("B20"))
+    
     ' (2) Open an instance of the FileSystemObject TextStream class.
     Set tsTxtFile = fso.CreateTextFile(mainWB.range("B20") & title & "_" & timeDate & ".txt", True)
     
@@ -218,6 +221,11 @@ Sub CreateTextFileBasic(title, text, mainWB)
     tsTxtFile.Close
     
 End Sub
+
+Function FolderExists(folderPath As String) As Boolean
+    ' Check if the folder exists
+    FolderExists = (Dir(folderPath, vbDirectory) <> "")
+End Function
 
 Sub sortBook(aWB, title)
     Dim rtIndexcol  As Integer

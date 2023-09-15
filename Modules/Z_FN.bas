@@ -85,12 +85,12 @@ Function cleanInput(inputText) As String
     cleanInput = Replace(cleanInput, "-", "")
 End Function
 
-Function checkAnalysisSSHeaders(fso) As Boolean
+Function checkAnalysisSSHeaders(FSO) As Boolean
     Dim anBook      As Workbook
     Dim temp        As Variant
     Dim arrayMessage As String
     checkAnalysisSSHeaders = False
-    For Each temp In fso
+    For Each temp In FSO
         If InStr(temp, "~") < 1 Then
             Workbooks.OpenText FileName:=temp, Local:=True
             Set anBook = ActiveWorkbook
@@ -199,20 +199,20 @@ Sub CreateTextFileBasic(title, text, mainWB)
     ' (3) Write two example lines of text to the TextStream object.
     ' (4) Close the TextStream object.
     
-    Dim fso         As Scripting.FileSystemObject
+    Dim FSO         As Scripting.FileSystemObject
     Dim tsTxtFile   As Scripting.TextStream
     
     Dim timeDate    As String
     timeDate = Format(Now, "mmm_dd_hhmm")
     
     ' (1) Open an instance of the FileSystemObject.
-    Set fso = New Scripting.FileSystemObject
+    Set FSO = New Scripting.FileSystemObject
     
     
     FolderExists (mainWB.range("B20"))
     
     ' (2) Open an instance of the FileSystemObject TextStream class.
-    Set tsTxtFile = fso.CreateTextFile(mainWB.range("B20") & title & "_" & timeDate & ".txt", True)
+    Set tsTxtFile = FSO.CreateTextFile(mainWB.range("B20") & title & "_" & timeDate & ".txt", True)
     
     ' (3) Write two example lines of text to the TextStream object.
     tsTxtFile.WriteLine text
